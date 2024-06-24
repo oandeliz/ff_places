@@ -156,24 +156,6 @@ class _LocationInputState extends State<LocationInput> {
             ),
           ],
         ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          TextButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.location_city),
-            label: const Text('Near By Places'),
-          ),
-          TextButton.icon(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (ctx) => const SearchLocations(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.map_outlined),
-            label: const Text('Search Location'),
-          ),
-        ])
       ],
     );
   }
