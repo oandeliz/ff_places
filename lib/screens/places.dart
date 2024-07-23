@@ -1,8 +1,9 @@
-import 'package:ff_places/providers/user_places.dart';
-import 'package:ff_places/widgets/places_list.dart';
 import 'package:flutter/material.dart';
-import 'package:ff_places/screens/add_places.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../Providers/user_places.dart';
+import '../widgets/places_list.dart';
+import 'add_places.dart';
 
 class PlacesScreen extends ConsumerStatefulWidget {
   const PlacesScreen({super.key});
@@ -25,6 +26,7 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
   @override
   Widget build(BuildContext context) {
     final userPlaces = ref.watch(userPlacesProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Places'),
@@ -38,7 +40,7 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
                 ),
               );
             },
-          )
+          ),
         ],
       ),
       body: Padding(
@@ -46,13 +48,11 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
         child: FutureBuilder(
           future: _placesFuture,
           builder: (context, snapshot) =>
-              snapshot.connectionState == ConnectionState.waiting
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : PlacesList(
-                      places: userPlaces,
-                    ),
+          snapshot.connectionState == ConnectionState.waiting
+              ? const Center(child: CircularProgressIndicator())
+              : PlacesList(
+            places: userPlaces,
+          ),
         ),
       ),
     );

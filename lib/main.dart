@@ -1,7 +1,8 @@
+import 'package:ff_places/screens/places.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ff_places/screens/places.dart';
+
 
 final colorScheme = ColorScheme.fromSeed(
   brightness: Brightness.dark,
@@ -28,12 +29,12 @@ final theme = ThemeData().copyWith(
 
 void main() {
   runApp(
-    const ProviderScope(child: MyApp(),)
+    const ProviderScope(child: MyApp()),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
