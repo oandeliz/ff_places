@@ -73,11 +73,18 @@ class _MapScreenState extends State<MapScreen> {
             return Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+          if (snapshot.hasError || !snapshot.hasData) {
+            print('Error or no data: ${snapshot.error}');
             return Center(child: Text('Failed to get current location.'));
           }
 
           _currentLocation = snapshot.data;
+
+          // Ensure location data is valid
+          if (_currentLocation == null || _currentLocation!.latitude == null || _currentLocation!.longitude == null) {
+            print('Invalid location data: $_currentLocation');
+            return Center(child: Text('Failed to get valid location data.'));
+          }
 
           return GoogleMap(
             onTap: !widget.isSelecting
