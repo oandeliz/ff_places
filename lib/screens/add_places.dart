@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../Providers/user_places.dart';
 import '../models/place.dart';
@@ -24,10 +25,16 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   void _savePlace() {
     final enteredTitle = _titleController.text;
 
-    if (enteredTitle.isEmpty ||
-        _selectedImage == null ||
-        _selectedLocation == null) {
-      return;
+    if (enteredTitle.isEmpty) {
+      throw const FormatException('title not provided');
+    }
+
+    if (_selectedImage == null) {
+      throw const FormatException('image provided');
+    }
+
+    if (_selectedLocation == null) {
+      throw const FormatException('location provided');
     }
 
     ref
