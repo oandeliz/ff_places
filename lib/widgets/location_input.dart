@@ -1,13 +1,12 @@
 import 'dart:convert';
 
+import 'package:ff_places/screens/osm_map.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 
 import '../models/place.dart';
-import '../screens/maps.dart';
-
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key, required this.onSelectLocation});
@@ -93,7 +92,7 @@ class _LocationInputState extends State<LocationInput> {
   void _selectOnMap() async {
     final pickedLocation = await Navigator.of(context).push<LatLng>(
       MaterialPageRoute(
-        builder: (ctx) => const MapScreen(),
+        builder: (ctx) => const OsmMap(),
       ),
     );
 
@@ -110,8 +109,8 @@ class _LocationInputState extends State<LocationInput> {
       'No location chosen',
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-        color: Theme.of(context).colorScheme.onBackground,
-      ),
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
     );
 
     if (_pickedLocation != null) {
