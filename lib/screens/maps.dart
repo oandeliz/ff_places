@@ -5,14 +5,14 @@ import '../models/place.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({
-    Key? key,
+    super.key,
     this.location = const PlaceLocation(
       latitude: 37.422,
       longitude: -122.084,
       address: '',
     ),
     this.isSelecting = true,
-  }) : super(key: key);
+  });
 
   final PlaceLocation location;
   final bool isSelecting;
@@ -29,21 +29,21 @@ class _MapScreenState extends State<MapScreen> {
   final Location _locationService = Location();
 
   Future<LocationData?> _getCurrentLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-    _serviceEnabled = await _locationService.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await _locationService.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await _locationService.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await _locationService.requestService();
+      if (!serviceEnabled) {
         return null;
       }
     }
 
-    _permissionGranted = await _locationService.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await _locationService.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await _locationService.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await _locationService.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return null;
       }
     }
@@ -70,12 +70,12 @@ class _MapScreenState extends State<MapScreen> {
         future: _getCurrentLocation(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError || !snapshot.hasData) {
             print('Error or no data: ${snapshot.error}');
-            return Center(child: Text('Failed to get current location.'));
+            return const Center(child: Text('Failed to get current location.'));
           }
 
           _currentLocation = snapshot.data;
