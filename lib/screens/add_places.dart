@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:ff_places/Providers/user_places.dart';
-import 'package:ff_places/models/places.dart';
-import 'package:ff_places/widgets/image_inoput.dart';
-import 'package:ff_places/widgets/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../Providers/user_places.dart';
+import '../models/place.dart';
+import '../widgets/image_inoput.dart';
+import '../widgets/location_input.dart';
 
 class AddPlaceScreen extends ConsumerStatefulWidget {
   const AddPlaceScreen({super.key});
@@ -24,10 +25,16 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   void _savePlace() {
     final enteredTitle = _titleController.text;
 
-    if (enteredTitle.isEmpty ||
-        _selectedImage == null ||
-        _selectedLocation == null) {
-      return;
+    if (enteredTitle.isEmpty) {
+      throw const FormatException('title not provided');
+    }
+
+    if (_selectedImage == null) {
+      throw const FormatException('image provided');
+    }
+
+    if (_selectedLocation == null) {
+      throw const FormatException('location provided');
     }
 
     ref
@@ -47,7 +54,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Place'),
+        title: const Text('Add new Place'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
@@ -56,27 +63,23 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             TextField(
               decoration: const InputDecoration(labelText: 'Title'),
               controller: _titleController,
-              style:
-                  TextStyle(color: Theme.of(context).colorScheme.onBackground),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            // saves user taken img,
+            const SizedBox(height: 10),
             ImageInput(
               onPickImage: (image) {
                 _selectedImage = image;
               },
             ),
-            const SizedBox(
-              height: 10,
+            const SizedBox(height: 10),
+            LocationInput(
+              onSelectLocation: (location) {
+                _selectedLocation = location;
+              },
             ),
-            LocationInput(onSelectLocation: (location) {
-              _selectedLocation = location;
-            }),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: _savePlace,
               icon: const Icon(Icons.add),

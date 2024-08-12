@@ -1,20 +1,20 @@
 import 'dart:convert';
 
-import 'package:ff_places/models/places.dart';
-import 'package:ff_places/screens/maps.dart';
+import 'package:ff_places/screens/osm_map.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
-import '../screens/Search_locations.dart';
+import '../models/place.dart';
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key, required this.onSelectLocation});
+
   final void Function(PlaceLocation location) onSelectLocation;
 
   @override
-  State<StatefulWidget> createState() {
+  State<LocationInput> createState() {
     return _LocationInputState();
   }
 }
@@ -29,11 +29,10 @@ class _LocationInputState extends State<LocationInput> {
     }
     final lat = _pickedLocation!.latitude;
     final lng = _pickedLocation!.longitude;
-
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C$lat,$lng&key=AIzaSyDxORr4vcwlSXXBEUKEZCHPG-DA8C2N-uE';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyDxORr4vcwlSXXBEUKEZCHPG-DA8C2N-uE';
   }
 
-  Future<void> _savedPlace(double latitude, double longitude) async {
+  Future<void> _savePlace(double latitude, double longitude) async {
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyDxORr4vcwlSXXBEUKEZCHPG-DA8C2N-uE');
     final response = await http.get(url);
@@ -53,7 +52,7 @@ class _LocationInputState extends State<LocationInput> {
   }
 
   void _getCurrentLocation() async {
-    Location location = new Location();
+    Location location = Location();
 
     bool serviceEnabled;
     PermissionStatus permissionGranted;
@@ -87,13 +86,13 @@ class _LocationInputState extends State<LocationInput> {
       return;
     }
 
-    _savedPlace(lat, lng);
+    _savePlace(lat, lng);
   }
 
   void _selectOnMap() async {
     final pickedLocation = await Navigator.of(context).push<LatLng>(
       MaterialPageRoute(
-        builder: (ctx) => const MapScreen(),
+        builder: (ctx) => const OsmMap(),
       ),
     );
 
@@ -101,18 +100,17 @@ class _LocationInputState extends State<LocationInput> {
       return;
     }
 
-    _savedPlace(pickedLocation.latitude, pickedLocation.longitude);
+    _savePlace(pickedLocation.latitude, pickedLocation.longitude);
   }
 
   @override
   Widget build(BuildContext context) {
     Widget previewContent = Text(
-      'No Location chosen',
+      'No location chosen',
       textAlign: TextAlign.center,
-      style: Theme.of(context)
-          .textTheme
-          .bodyLarge!
-          .copyWith(color: Theme.of(context).colorScheme.onBackground),
+      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
     );
 
     if (_pickedLocation != null) {
@@ -135,45 +133,28 @@ class _LocationInputState extends State<LocationInput> {
           width: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              border: Border.all(
-                  width: 1,
-                  color:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.2))),
+            border: Border.all(
+              width: 1,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            ),
+          ),
           child: previewContent,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton.icon(
-              onPressed: _getCurrentLocation,
               icon: const Icon(Icons.location_on),
               label: const Text('Get Current Location'),
+              onPressed: _getCurrentLocation,
             ),
             TextButton.icon(
-              onPressed: _selectOnMap,
               icon: const Icon(Icons.map),
               label: const Text('Select on Map'),
+              onPressed: _selectOnMap,
             ),
           ],
         ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          TextButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.location_city),
-            label: const Text('Near By Places'),
-          ),
-          TextButton.icon(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (ctx) => const SearchLocations(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.map_outlined),
-            label: const Text('Search Location'),
-          ),
-        ])
       ],
     );
   }
