@@ -135,14 +135,14 @@ class _MapScreenState extends State<OsmMap> with OSMMixinObserver {
                 roadConfiguration: const RoadOption(
                   roadColor: Colors.yellowAccent,
                 ),
-                markerOption: MarkerOption(
-                    defaultMarker: const MarkerIcon(
-                  icon: Icon(
-                    Icons.person_pin_circle,
-                    color: Colors.blue,
-                    size: 56,
-                  ),
-                )),
+                // markerOption: MarkerOption(
+                //     defaultMarker: const MarkerIcon(
+                //   icon: Icon(
+                //     Icons.person_pin_circle,
+                //     color: Colors.blue,
+                //     size: 56,
+                //   ),
+                // )),
               ));
         },
       ),
